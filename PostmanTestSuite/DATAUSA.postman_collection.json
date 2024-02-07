@@ -1,0 +1,451 @@
+{
+	"info": {
+		"_postman_id": "ae274dfe-8824-49c2-8df2-a45b9e48726b",
+		"name": "DATAUSA",
+		"description": "Develop a test suite in Postman to validate a minimum of  \n10 distinct methods from the USA data API  \n([https://datausa.io/about/api/](https://datausa.io/about/api/)). Include scenarios that involve  \nparameterization, dynamic data extraction, and handling complex  \nauthentication mechanisms. Evaluate the API responses against  \ndefined schemas and ensure comprehensive error handling.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32546917"
+	},
+	"item": [
+		{
+			"name": "GetPopulation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('T1. Response has the proper schema', function () {",
+							"    pm.response.to.have.jsonSchema({",
+							"        type: 'object',",
+							"        required: [",
+							"            'data',",
+							"            'source'",
+							"        ],",
+							"        properties: {",
+							"            data: {",
+							"                type: 'array',",
+							"                items: {",
+							"                    type: 'object',",
+							"                    required: [",
+							"                        'ID Nation',",
+							"                        'Nation',",
+							"                        'ID Year',",
+							"                        'Year',",
+							"                        'Population',",
+							"                        'Slug Nation'",
+							"                    ]",
+							"                }",
+							"            },",
+							"            source: {",
+							"                type: 'array',",
+							"                items: {",
+							"                    type: 'object',",
+							"                    required: [",
+							"                        'measures',",
+							"                        'annotations',",
+							"                        'name',",
+							"                        'substitutions'",
+							"                    ]",
+							"                }",
+							"            }",
+							"        }",
+							"    });",
+							"})",
+							"",
+							"pm.test('T2. Response status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test('T3. Population data is not empty', function () {",
+							"    pm.expect(pm.response.json().data.length).to.be.above(0);",
+							"})",
+							"",
+							"var years = [",
+							"    '2019',",
+							"    '2020',",
+							"    '2021'",
+							"];",
+							"",
+							"years.forEach(function (year) {",
+							"    pm.test('T4. Population data is retrieved for year ' + year, function () {",
+							"        pm.expect(pm.response.json().data.some(function (item) {",
+							"            return item.Year === year;",
+							"        })).to.be.true;",
+							"    });",
+							"})",
+							"",
+							"var latestYear = pm.response.json().data[0]['Year'];",
+							"",
+							"pm.test('T5. The observable Latest year is correctly extracted', function () {",
+							"    pm.expect(latestYear).to.equal('2021');",
+							"})",
+							"",
+							"//dinamic validation of the latest year based on the latest year nation data",
+							"pm.sendRequest({",
+							"    url: 'https://datausa.io/api/data?drilldowns=Nation&measures=Population&year=latest',",
+							"    method: 'GET',",
+							"    header: 'Content-Type:application/json'",
+							"}, function (err, res) {",
+							"    // Parse the response body as JSON",
+							"    var responseBody = res.json();",
+							"    ",
+							"    // Extract the \"ID Year\" from the response data",
+							"    var idYear = responseBody.data[0]['ID Year'];",
+							"",
+							"    // Log the extracted ID Year for verification (optional)",
+							"    console.log('Extracted ID Year:', idYear);",
+							"    ",
+							"    // Set the extracted ID Year as an environment variable for later use",
+							"    pm.environment.set('latestYearFromSecondAPI', idYear);",
+							"",
+							"    // Retrieve the latest year from the environment variable",
+							"    var latestYearFromSecondAPI = pm.environment.get('latestYearFromSecondAPI');",
+							"",
+							"    // Test the latest year from the first API against the latest year from the second API",
+							"    pm.test('T6. The latest year from the GetNationalLatestYearData API match with this body current year', function () {",
+							"        var latestYearFromFirstAPI = responseBody.data[0]['Year'];",
+							"        pm.expect(parseInt(latestYearFromFirstAPI)).to.eql(parseInt(latestYearFromSecondAPI));",
+							"    });",
+							"});",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.request.url + '&invalid_param=abc',",
+							"    method: pm.request.method,",
+							"    header: pm.request.headers,",
+							"    body: pm.request.body",
+							"}, function (err, res) {",
+							"    pm.test('T7. Response indicates invalid parameters', function () {",
+							"        pm.expect(res.json().data).to.be.an('array').that.is.empty;",
+							"    });",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://datausa.io/api/data?drilldowns=Nation&measures=Population",
+					"protocol": "https",
+					"host": [
+						"datausa",
+						"io"
+					],
+					"path": [
+						"api",
+						"data"
+					],
+					"query": [
+						{
+							"key": "drilldowns",
+							"value": "Nation"
+						},
+						{
+							"key": "measures",
+							"value": "Population"
+						}
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "GetNationalLatestYearData",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('T1. Response has the proper schema', function () {\r",
+							"    pm.response.to.have.jsonSchema({\r",
+							"        type: 'object',\r",
+							"        required: [\r",
+							"            'data',\r",
+							"            'source'\r",
+							"        ],\r",
+							"        properties: {\r",
+							"            data: {\r",
+							"                type: 'array',\r",
+							"                items: {\r",
+							"                    type: 'object',\r",
+							"                    required: [\r",
+							"                        'ID Nation',\r",
+							"                        'Nation',\r",
+							"                        'ID Year',\r",
+							"                        'Year',\r",
+							"                        'Population',\r",
+							"                        'Slug Nation'\r",
+							"                    ]\r",
+							"                }\r",
+							"            },\r",
+							"            source: {\r",
+							"                type: 'array',\r",
+							"                items: {\r",
+							"                    type: 'object',\r",
+							"                    required: [\r",
+							"                        'measures',\r",
+							"                        'annotations',\r",
+							"                        'name',\r",
+							"                        'substitutions'\r",
+							"                    ]\r",
+							"                }\r",
+							"            }\r",
+							"        }\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T2. Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T3. Population data is not empty\", function () {\r",
+							"    pm.expect(pm.response.json().data.length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T4. Proper ID Nation for United States\", function () {\r",
+							"    pm.expect(pm.response.json().data[0][\"ID Nation\"]).to.eql(\"01000US\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T5. Valid Year in Response\", function () {\r",
+							"    pm.expect(pm.response.json().data[0][\"Year\"]).to.eql(\"2021\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T6. Population value is greater than zero\", function () {\r",
+							"    pm.expect(pm.response.json().data[0][\"Population\"]).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T7. Source information is present\", function () {\r",
+							"    pm.expect(pm.response.json().source.length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T8. Correct source name\", function () {\r",
+							"    pm.expect(pm.response.json().source[0][\"annotations\"][\"source_name\"]).to.eql(\"Census Bureau\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T9. Source description is present\", function () {\r",
+							"    pm.expect(pm.response.json().source[0][\"annotations\"][\"source_description\"]).to.be.a(\"string\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T10. Dataset link has a valid URL\", function () {\r",
+							"    pm.expect(pm.response.json().source[0][\"annotations\"][\"dataset_link\"]).to.match(/^https?:\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+[/#?]?.*$/);\r",
+							"});\r",
+							"\r",
+							"// Make a request with invalid parameters\r",
+							"pm.sendRequest({\r",
+							"    url: pm.request.url + \"&invalid_param=abc\", // Add an invalid parameter to the URL\r",
+							"    method: pm.request.method,\r",
+							"    header: pm.request.headers,\r",
+							"    body: pm.request.body\r",
+							"}, function (err, res) {\r",
+							"    pm.test(\"T11. Response indicates invalid parameters\", function () {\r",
+							"        // Check if the 'data' array in the response is empty\r",
+							"        pm.expect(res.json().data).to.be.an('array').that.is.empty;\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://datausa.io/api/data?drilldowns=Nation&measures=Population&year=latest",
+					"protocol": "https",
+					"host": [
+						"datausa",
+						"io"
+					],
+					"path": [
+						"api",
+						"data"
+					],
+					"query": [
+						{
+							"key": "drilldowns",
+							"value": "Nation"
+						},
+						{
+							"key": "measures",
+							"value": "Population"
+						},
+						{
+							"key": "year",
+							"value": "latest"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetStateLatestYearData",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('T1. Response has the proper schema', function () {\r",
+							"    pm.response.to.have.jsonSchema({\r",
+							"        type: 'object',\r",
+							"        required: ['data', 'source'],\r",
+							"        properties: {\r",
+							"            data: {\r",
+							"                type: 'array',\r",
+							"                items: {\r",
+							"                    type: 'object',\r",
+							"                    required: ['ID State', 'State', 'ID Year', 'Year', 'Population', 'Slug State']\r",
+							"                }\r",
+							"            },\r",
+							"            source: {\r",
+							"                type: 'array',\r",
+							"                items: {\r",
+							"                    type: 'object',\r",
+							"                    required: ['measures', 'annotations', 'name', 'substitutions']\r",
+							"                }\r",
+							"            }\r",
+							"        }\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T2. Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T3. Population data is not empty\", function () {\r",
+							"    pm.expect(pm.response.json().data.length).to.be.above(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate population of Texas\", function () {\r",
+							"    var populationCalifornia = pm.response.json().data.find(state => state.State === \"Texas\").Population;\r",
+							"    pm.expect(populationCalifornia).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T4. Response contains data for all states, the federal district of columbia and Puerto Rico\", function () {\r",
+							"    // Log the total number of entries in the response\r",
+							"    console.log(\"Total entries in response:\", pm.response.json().data.length);\r",
+							"\r",
+							"    // Check if the total number of entries matches the expected count of 51\r",
+							"    pm.expect(pm.response.json().data.length).to.eql(52);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T5. All states belong to the latest year\", function () {\r",
+							"    pm.expect(pm.response.json().data.every(state => state.Year === \"2021\")).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T6. Validate ID of Texas\", function () {\r",
+							"    // Find the entry for Texas in the response data\r",
+							"    var texasData = pm.response.json().data.find(state => state.State === \"Texas\");\r",
+							"\r",
+							"    // Check if Texas data is found\r",
+							"    pm.expect(texasData).to.not.be.undefined;\r",
+							"\r",
+							"    // Validate that the ID for Texas is '04000US48'\r",
+							"    pm.expect(texasData[\"ID State\"]).to.eql(\"04000US48\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T7. Each state has a unique ID\", function () {\r",
+							"    var stateIds = pm.response.json().data.map(state => state.ID_State).filter(id => id !== undefined);\r",
+							"    pm.expect(stateIds).to.have.lengthOf(new Set(stateIds).size);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T8. Population values are positive integers\", function () {\r",
+							"    pm.response.json().data.forEach(state => {\r",
+							"        pm.expect(state.Population).to.be.a('number');\r",
+							"        pm.expect(state.Population).to.be.above(0);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"T9. All slugs are unique\", function () {\r",
+							"    var stateSlugs = pm.response.json().data.map(state => state.Slug_State).filter(slug => slug !== undefined);\r",
+							"    pm.expect(stateSlugs).to.have.lengthOf(new Set(stateSlugs).size);\r",
+							"});\r",
+							"\r",
+							"// Make a request with invalid parameters\r",
+							"pm.sendRequest({\r",
+							"    url: pm.request.url + \"&invalid_param=abc\", // Add an invalid parameter to the URL\r",
+							"    method: pm.request.method,\r",
+							"    header: pm.request.headers,\r",
+							"    body: pm.request.body\r",
+							"}, function (err, res) {\r",
+							"    pm.test(\"T10. Response indicates invalid parameters\", function () {\r",
+							"        // Check if the 'data' array in the response is empty\r",
+							"        pm.expect(res.json().data).to.be.an('array').that.is.empty;\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://datausa.io/api/data?drilldowns=State&measures=Population&year=latest",
+					"protocol": "https",
+					"host": [
+						"datausa",
+						"io"
+					],
+					"path": [
+						"api",
+						"data"
+					],
+					"query": [
+						{
+							"key": "drilldowns",
+							"value": "State"
+						},
+						{
+							"key": "measures",
+							"value": "Population"
+						},
+						{
+							"key": "year",
+							"value": "latest"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}

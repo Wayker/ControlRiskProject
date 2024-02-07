@@ -1,0 +1,283 @@
+{
+	"id": "e51bc35e-8434-44aa-97af-72d8adcaa919",
+	"name": "DATAUSA",
+	"timestamp": "2024-02-07T20:46:01.031Z",
+	"collection_id": "32546917-ae274dfe-8824-49c2-8df2-a45b9e48726b",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 31,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2024-02-07T20:45:59.281Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "c02b3b33-5f10-402a-955a-412f79ed9c80",
+			"name": "GetPopulation",
+			"url": "https://datausa.io/api/data?drilldowns=Nation&measures=Population",
+			"time": 79,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"T1. Response has the proper schema": true,
+				"T2. Response status code is 200": true,
+				"T3. Population data is not empty": true,
+				"T4. Population data is retrieved for year 2019": true,
+				"T4. Population data is retrieved for year 2020": true,
+				"T4. Population data is retrieved for year 2021": true,
+				"T5. The observable Latest year is correctly extracted": true,
+				"T6. The latest year from the GetNationalLatestYearData API match with this body current year": true,
+				"T7. Response indicates invalid parameters": true
+			},
+			"testPassFailCounts": {
+				"T1. Response has the proper schema": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T2. Response status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T3. Population data is not empty": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T4. Population data is retrieved for year 2019": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T4. Population data is retrieved for year 2020": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T4. Population data is retrieved for year 2021": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T5. The observable Latest year is correctly extracted": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T6. The latest year from the GetNationalLatestYearData API match with this body current year": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T7. Response indicates invalid parameters": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				79
+			],
+			"allTests": [
+				{
+					"T1. Response has the proper schema": true,
+					"T2. Response status code is 200": true,
+					"T3. Population data is not empty": true,
+					"T4. Population data is retrieved for year 2019": true,
+					"T4. Population data is retrieved for year 2020": true,
+					"T4. Population data is retrieved for year 2021": true,
+					"T5. The observable Latest year is correctly extracted": true,
+					"T6. The latest year from the GetNationalLatestYearData API match with this body current year": true,
+					"T7. Response indicates invalid parameters": true
+				}
+			]
+		},
+		{
+			"id": "33cca45f-1806-4c98-a0c6-61af1005b5ca",
+			"name": "GetNationalLatestYearData",
+			"url": "https://datausa.io/api/data?drilldowns=Nation&measures=Population&year=latest",
+			"time": 83,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"T1. Response has the proper schema": true,
+				"T2. Response status code is 200": true,
+				"T3. Population data is not empty": true,
+				"T4. Proper ID Nation for United States": true,
+				"T5. Valid Year in Response": true,
+				"T6. Population value is greater than zero": true,
+				"T7. Source information is present": true,
+				"T8. Correct source name": true,
+				"T9. Source description is present": true,
+				"T10. Dataset link has a valid URL": true,
+				"T11. Response indicates invalid parameters": true
+			},
+			"testPassFailCounts": {
+				"T1. Response has the proper schema": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T2. Response status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T3. Population data is not empty": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T4. Proper ID Nation for United States": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T5. Valid Year in Response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T6. Population value is greater than zero": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T7. Source information is present": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T8. Correct source name": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T9. Source description is present": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T10. Dataset link has a valid URL": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T11. Response indicates invalid parameters": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				83
+			],
+			"allTests": [
+				{
+					"T1. Response has the proper schema": true,
+					"T2. Response status code is 200": true,
+					"T3. Population data is not empty": true,
+					"T4. Proper ID Nation for United States": true,
+					"T5. Valid Year in Response": true,
+					"T6. Population value is greater than zero": true,
+					"T7. Source information is present": true,
+					"T8. Correct source name": true,
+					"T9. Source description is present": true,
+					"T10. Dataset link has a valid URL": true,
+					"T11. Response indicates invalid parameters": true
+				}
+			]
+		},
+		{
+			"id": "3a29c264-b486-4715-a4fd-5eaea8f3fe15",
+			"name": "GetStateLatestYearData",
+			"url": "https://datausa.io/api/data?drilldowns=State&measures=Population&year=latest",
+			"time": 79,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"T1. Response has the proper schema": true,
+				"T2. Response status code is 200": true,
+				"T3. Population data is not empty": true,
+				"Validate population of Texas": true,
+				"T4. Response contains data for all states, the federal district of columbia and Puerto Rico": true,
+				"T5. All states belong to the latest year": true,
+				"T6. Validate ID of Texas": true,
+				"T7. Each state has a unique ID": true,
+				"T8. Population values are positive integers": true,
+				"T9. All slugs are unique": true,
+				"T10. Response indicates invalid parameters": true
+			},
+			"testPassFailCounts": {
+				"T1. Response has the proper schema": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T2. Response status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T3. Population data is not empty": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Validate population of Texas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T4. Response contains data for all states, the federal district of columbia and Puerto Rico": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T5. All states belong to the latest year": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T6. Validate ID of Texas": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T7. Each state has a unique ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T8. Population values are positive integers": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T9. All slugs are unique": {
+					"pass": 1,
+					"fail": 0
+				},
+				"T10. Response indicates invalid parameters": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				79
+			],
+			"allTests": [
+				{
+					"T1. Response has the proper schema": true,
+					"T2. Response status code is 200": true,
+					"T3. Population data is not empty": true,
+					"Validate population of Texas": true,
+					"T4. Response contains data for all states, the federal district of columbia and Puerto Rico": true,
+					"T5. All states belong to the latest year": true,
+					"T6. Validate ID of Texas": true,
+					"T7. Each state has a unique ID": true,
+					"T8. Population values are positive integers": true,
+					"T9. All slugs are unique": true,
+					"T10. Response indicates invalid parameters": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 241,
+	"collection": {
+		"requests": [
+			{
+				"id": "c02b3b33-5f10-402a-955a-412f79ed9c80",
+				"method": "GET"
+			},
+			{
+				"id": "33cca45f-1806-4c98-a0c6-61af1005b5ca",
+				"method": "GET"
+			},
+			{
+				"id": "3a29c264-b486-4715-a4fd-5eaea8f3fe15",
+				"method": "GET"
+			}
+		]
+	}
+}
