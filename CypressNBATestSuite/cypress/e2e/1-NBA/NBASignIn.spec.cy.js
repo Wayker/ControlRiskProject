@@ -25,3 +25,4 @@ describe('NBA.com Successful Sign In Test', () => {
     cy.url().should('eq', 'https://www.nba.com/account/nbaprofile');
   });
 });
+
