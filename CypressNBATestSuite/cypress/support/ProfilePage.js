@@ -1,5 +1,6 @@
 class ProfilePage {
-    visit() {
+    
+   visit() {
       cy.visit('https://www.nba.com/account/nbaprofile');
     }
   
@@ -9,4 +10,4 @@ class ProfilePage {
   
   }
   
-  export default ProfilePage;
+  export default new ProfilePage();

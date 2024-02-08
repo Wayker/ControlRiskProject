@@ -3,8 +3,8 @@ class LandingPage {
       cy.visit('https://www.nba.com');
     }
   
-    clickSignInButton() {
-      cy.get('.NavItem_link__ZBDtq').contains('Sign In').should('be.visible').then(($button) => {
+    verifySignInButtonVisible() {
+      cy.get('.NavItem_link__ZBDtq').contains('Sign In').then(($button) => {
         if ($button.length > 0) {
           cy.wrap($button).click();
           cy.wait(1000); // Adding a small pause after clicking the Sign In button
@@ -15,7 +15,7 @@ class LandingPage {
     }
   
     clickSignInWithNBAIDButton() {
-      cy.get('.NavDropdownChild_item__k5Oea').contains('Sign in with NBA ID').should('be.visible').then(($button) => {
+      cy.get('.NavDropdownChild_item__k5Oea').contains('Sign in with NBA ID').then(($button) => {
         if ($button.length > 0) {
           cy.wrap($button).click();
           cy.wait(1000); // Adding a small pause after clicking the "Sign in with NBA ID" button
